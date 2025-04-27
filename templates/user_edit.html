@@ -1,0 +1,48 @@
+
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改用户</title>
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+
+<body>
+    <!-- 左侧菜单栏 -->
+    {% include  'base/leftmenu.html' %}
+
+    <!-- 右侧内容区域 -->
+    <div class="content">
+        <!-- 修改密码 -->
+        <div id="change-password">
+            <h3>修改用户</h3>
+            <form class="password-form" method="POST" action="/user_edit_save">
+                <label for="username">账号:</label>
+                <input type="text" id="username" name="username" placeholder="账号" value="{{ user.username }}" readonly="true" style="background-color: #f0f0f0;" required>
+                <label for="password">密码:</label>
+                <input type="text" id="password" name="password" placeholder="密码" value="{{ user.password }}" readonly="true" style="background-color: #f0f0f0;" required>
+                <label for="usertype">权限类型:</label>
+                <div style=" padding-bottom: 10px;padding-top: 10px;">
+                <select id="usertype" name="usertype" style="width: 400px;" required>
+                    <option value="管理员" {% if user.usertype == '管理员' %}selected{% endif %}>管理员</option>
+                    <option value="普通用户" {% if user.usertype == '普通用户' %}selected{% endif %}>普通用户</option>
+                </select>
+            </div>
+
+                <button type="submit">修改</button>
+            </form>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                <li class="{{ category }}" style="list-style-type: none">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</body>
+
+</html>

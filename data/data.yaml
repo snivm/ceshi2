@@ -1,0 +1,19 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 12
+# Classes
+names:
+  0: Brown_Spot
+  1: Citrus_Black_Spot
+  2: Citrus_Canker
+  3: Citrus_Greasy_Spot
+  4: Citrus_Scab
+  5: Greening
+  6: Healthy
+  7: Leprosis
+  8: Orange_Scab
+  9: Sooty_Mold
+  10: Thrips
+  11: Xyloporosis

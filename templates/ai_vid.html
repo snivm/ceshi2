@@ -1,0 +1,206 @@
+ 
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AI图像处理</title>
+        <link rel="stylesheet" href="/static/index.css">
+        <link rel="stylesheet" href="/static/ai.css">
+    </head>
+    <body>
+ 
+        <!-- 右侧内容区域 -->
+        <div class="content">
+            <div class="ai-container">
+                <h1 class="title">AI视频处理</h1>
+    
+                <form id="aiForm" action="/ai/ai_process_video" method="POST" enctype="multipart/form-data">
+         
+
+                    <div class="upload-section" id="dropZone">
+                        <!--<input type="file" name="image" id="fileInput" class="file-input" accept="image/*">
+                            <input type="file" id="videoInput" accept="video/*">
+                        -->
+                        <input type="file" name="image" id="fileInput" class="file-input" accept="video/*">
+                        <label for="fileInput" class="upload-btn">选择视频</label>
+                        <p>或将视频拖放到此处</p>
+                    </div>
+    
+                    <div class="preview-section">
+                        <div class="preview-box">
+                            <span class="preview-label">原始视频</span>
+                            <!--
+                            <img id="imagePreview" src="#" alt="预览图" style="display: none;width: 100%"   class="preview-image">
+                                                    <video id="videoPlayer" controls></video>
+                               <video id="videoPlayer" style=" width: 100%"  controls></video>
+                                 <input type="file" name="video" id="videoPlayer" style=" width: 100%"  accept="video/*">
+                            -->
+
+                            <video id="videoPlayer" style=" width: 100%"  controls></video>
+                            <button type="button" class="process-btn" data-model="model1">模型检测</button>
+                        </div>
+    
+                        <div class="preview-box">
+                            <span class="preview-label">处理结果</span>
+                            <img id="processedImageXXX" src="#" alt="处理结果" style="display: none;width: 100%"   class="preview-image">
+                            <video id="processedImage" style=" display: none;width: 100%"   controls>
+                     
+                                <source src="{{ url_for('static', filename='output_video.mp4') }}" type="video/mp4">
+                              
+                                
+                            </video>
+                           <!--<div class="result-message" id="result_class_name"></div>--> 
+                            <div class="result-message" id="resultMessage"></div>
+                        </div>
+                      
+                    </div>
+    
+       
+    
+                
+                </form>
+            </div>
+        </div>
+    
+        <script>
+            // 获取DOM元素
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const processedImage = document.getElementById('processedImage');
+            const resultMessage = document.getElementById('resultMessage');
+            const result_class_name = document.getElementById('result_class_name');
+            const aiForm = document.getElementById('aiForm');
+     
+    
+            // 文件选择处理
+            fileInput.addEventListener('change', function(e) {
+                handleFiles(e.target.files);
+            });
+    
+            // 拖放处理
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropZone.style.borderColor = '#2196F3';
+                dropZone.style.backgroundColor = '#f0f7ff';
+            });
+    
+            dropZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                dropZone.style.borderColor = '#ddd';
+                dropZone.style.backgroundColor = '#f9f9f9';
+            });
+    
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropZone.style.borderColor = '#ddd';
+                dropZone.style.backgroundColor = '#f9f9f9';
+                handleFiles(e.dataTransfer.files);
+            });
+    
+            // 处理文件函数
+            function handleFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type.startsWith('video/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+
+             // 暂停视频播放
+            processedImage.pause();
+            // 将当前播放位置设置为视频开始处
+            processedImage.currentTime = 0;
+            // 移除视频源
+            processedImage.src = "";
+            // 加载空源以释放资源
+            processedImage.load();
+ 
+                           
+                            if (file) {
+                                const url = URL.createObjectURL(file);
+                                videoPlayer.src = url;
+                                //alert(url);
+                            }
+                            
+                            // 显示原始图片
+                            //imagePreview.src = e.target.result;
+                            //imagePreview.style.display = 'block';
+    
+                            // 隐藏处理结果
+                            processedImage.style.display = 'none';
+                            processedImage.src = '#';
+    
+                            // 清空结果消息
+                            resultMessage.innerHTML = '-';
+                            //alert(2222);
+                            //result_class_name.innerHTML = '';
+                            //zhifubtn.style.display = 'none';
+                            
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            }
+    
+    document.querySelectorAll('.process-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            
+            // 暂停视频播放
+            processedImage.pause();
+            // 将当前播放位置设置为视频开始处
+            processedImage.currentTime = 0;
+            // 移除视频源
+            processedImage.src = "";
+            // 加载空源以释放资源
+            processedImage.load();
+            resultMessage.innerHTML = '视频处理中...';
+
+
+            const model = this.getAttribute('data-model');
+            const formData = new FormData();
+            //formData.append('image', fileInput.files[0]);
+            formData.append('video', fileInput.files[0]);
+            formData.append('model', model);
+    
+            fetch(aiForm.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    resultMessage.innerHTML = `错误：${data.error}`;
+                    //result_class_name.innerHTML = '';
+                    //zhifubtn.style.display = 'none';
+                } else {
+                    // 添加时间戳或随机参数避免缓存
+                    const timestamp = new Date().getTime();
+                    //processedImage.src = `${data.processed_image}?v=${timestamp}`;
+                    processedImage.style.display = 'block';
+
+
+                    const newVideoPath = "{{ url_for('static', filename='output_video.mp4') }}";
+                    processedImage.src = newVideoPath;
+                    processedImage.load();
+                    console.log('视频已重新加载1');
+                      // 尝试播放视频
+                      processedImage.play().catch(error => {
+                        console.error('自动播放失败:', error);
+                    });
+
+                    resultMessage.innerHTML = data.result;  // 显示处理结果消息
+                    //result_class_name.innerHTML = data.result_class_name;  // 显示处理结果消息
+                    //zhifubtn.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultMessage.innerHTML = '处理失败，请稍后再试。';
+                //result_class_name.innerHTML = '';
+                //zhifubtn.style.display = 'none';
+            });
+        });
+    });
+        </script>
+    </body>
+    </html>

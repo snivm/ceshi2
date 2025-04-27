@@ -1,0 +1,147 @@
+ 
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI图像处理</title>
+    <link rel="stylesheet" href="/static/index.css">
+    <link rel="stylesheet" href="/static/ai.css">
+</head>
+<body>
+    <!-- 左侧菜单栏 -->
+    {% include  'base/leftmenu.html' %}
+
+    <!-- 右侧内容区域 -->
+    <div class="content">
+        <div class="ai-container">
+            <h1 class="title">AI图像处理</h1>
+
+            <form id="aiForm" action="/ai/process" method="POST" enctype="multipart/form-data">
+     
+                <div class="preview-section">
+                    <div class="preview-box">
+                        <span class="preview-label">原始图片</span>
+                        <img id="imagePreview" src="#" alt="预览图" style="display: none;width: 100%"   class="preview-image">
+                        <button type="button" class="process-btn" data-model="model1">模型检测</button>
+                    </div>
+
+                    <div class="preview-box">
+                        <span class="preview-label">处理结果</span>
+                        <img id="processedImage" src="#" alt="处理结果" style="display: none;width: 100%"   class="preview-image">
+                        <div class="result-message" id="result_class_name"></div>
+              
+                    </div>
+                  
+                </div>
+
+                <div class="upload-section" id="dropZone">
+                    <input type="file" name="image" id="fileInput" class="file-input" accept="image/*">
+                    <label for="fileInput" class="upload-btn">选择图片</label>
+                    <p>或将图片拖放到此处</p>
+                </div>
+
+
+                <div class="result-message" id="resultMessage"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const processedImage = document.getElementById('processedImage');
+        const resultMessage = document.getElementById('resultMessage');
+        const result_class_name = document.getElementById('result_class_name');
+        const aiForm = document.getElementById('aiForm');
+ 
+
+        // 文件选择处理
+        fileInput.addEventListener('change', function(e) {
+            handleFiles(e.target.files);
+        });
+
+        // 拖放处理
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = '#2196F3';
+            dropZone.style.backgroundColor = '#f0f7ff';
+        });
+
+        dropZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ddd';
+            dropZone.style.backgroundColor = '#f9f9f9';
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ddd';
+            dropZone.style.backgroundColor = '#f9f9f9';
+            handleFiles(e.dataTransfer.files);
+        });
+
+        // 处理文件函数
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // 显示原始图片
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+
+                        // 隐藏处理结果
+                        processedImage.style.display = 'none';
+                        processedImage.src = '#';
+
+                        // 清空结果消息
+                        resultMessage.innerHTML = '';
+                        result_class_name.innerHTML = '';
+                        //zhifubtn.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+document.querySelectorAll('.process-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const model = this.getAttribute('data-model');
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        formData.append('model', model);
+
+        fetch(aiForm.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                resultMessage.innerHTML = `错误：${data.error}`;
+                result_class_name.innerHTML = '';
+                //zhifubtn.style.display = 'none';
+            } else {
+                // 添加时间戳或随机参数避免缓存
+                const timestamp = new Date().getTime();
+                processedImage.src = `${data.processed_image}?v=${timestamp}`;
+                processedImage.style.display = 'block';
+                resultMessage.innerHTML = data.result;  // 显示处理结果消息
+                result_class_name.innerHTML = data.result_class_name;  // 显示处理结果消息
+                //zhifubtn.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            resultMessage.innerHTML = '处理失败，请稍后再试。';
+            result_class_name.innerHTML = '';
+            //zhifubtn.style.display = 'none';
+        });
+    });
+});
+    </script>
+</body>
+</html>

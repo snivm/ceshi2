@@ -1,0 +1,55 @@
+ 
+<html class="loading" lang="en" data-textdirection="ltr">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+<meta name="author" content="PIXINVENT">
+<title>自助售货管理后台</title>
+<link rel="stylesheet" type="text/css" href="/static/mb/app-assets/css/vendors.css">
+<link rel="stylesheet" type="text/css" href="/static/mb/app-assets/css/vertical-menu.css">
+<link rel="stylesheet" type="text/css" href="/static/mb/app-assets/css/bootstrap-extended.css">
+</head>
+<body>
+<div class="content-wrapper">
+  <div class="content-header ">
+    <div class="content-header-left mb-2 clearfix">
+      <h3 class="content-header-title mb-0">修改密码</h3>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <form class="password-form" method="POST" action="/pwd">
+        <div class="form1 form3" >
+<ul class="row">
+<li class="col-sm-10 col-xs-12"><span>旧密码：</span><input type="password" id="oldpassword" name="oldpassword" class="form-control"></li>
+<li class="col-sm-10 col-xs-12"><span>新密码：</span><input type="password" id="newpassword" name="newpassword" class="form-control"></li>
+ 
+<li class="col-sm-10 col-xs-12"><input type="submit" class="btn btn-primary " value="确认保存"></li>
+	
+					</ul>
+				</div>
+            </form>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                <li class="{{ category }}" style="list-style-type: none;color: red;" >{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+      
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="/static/mb/app-assets/js/vendors.min.js" type="text/javascript"></script> 
+<script src="/static/mb/app-assets/js/app-menu.js" type="text/javascript"></script> 
+<script src="/static/mb/app-assets/js/app.js" type="text/javascript"></script> 
+<script src="/static/mb/app-assets/js/echarts.min.js" type="text/javascript"></script> 
+</body>
+</html>

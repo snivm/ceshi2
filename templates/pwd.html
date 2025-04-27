@@ -1,0 +1,38 @@
+
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改密码</title>
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+
+<body>
+    <!-- 左侧菜单栏 -->
+    {% include  'base/leftmenu.html' %}
+
+    <!-- 右侧内容区域 -->
+    <div class="content">
+        <!-- 修改密码 -->
+        <div id="change-password">
+            <h3>修改密码</h3>
+            <form class="password-form" method="POST" action="/pwd">
+                <input type="password" id="oldpassword" name="oldpassword" placeholder="旧密码" required>
+                <input type="password" id="newpassword" name="newpassword" placeholder="新密码" required>
+                <button type="submit">修改</button>
+            </form>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                <li class="{{ category }}" style="list-style-type: none">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</body>
+
+</html>

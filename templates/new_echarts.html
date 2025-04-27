@@ -1,0 +1,168 @@
+
+<html class="loading" lang="en" data-textdirection="ltr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+  <meta name="author" content="PIXINVENT">
+  <title>管理后台</title>
+  <link rel="stylesheet" type="text/css" href="/static/mb/app-assets/css/vendors.css">
+  <link rel="stylesheet" type="text/css" href="/static/mb/app-assets/css/vertical-menu.css">
+  <link rel="stylesheet" type="text/css" href="/static/mb/app-assets/css/bootstrap-extended.css">
+</head>
+<body>
+<div class="content-wrapper">
+   
+		  
+		<div class="row">
+          <div class="col-lg-12 col-md-12 col-12">
+            <div class="card">
+              <div class="card-header border-0-bottom">
+                <h4 class="card-title">ECharts数据分析</h4>
+              </div>
+              <div class="card-content">
+                <div class="card-body">
+                     <div class="chartjs" style="height: 300px;" id="echart1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+		  
+	 
+		  
+      </div>
+    </div>
+	
+
+  <script src="/static/mb/app-assets/js/vendors.min.js" type="text/javascript"></script>
+  <script src="/static/mb/app-assets/js/app-menu.js" type="text/javascript"></script>
+  <script src="/static/mb/app-assets/js/app.js" type="text/javascript"></script>
+  <script src="/static/mb/app-assets/js/echarts.min.js" type="text/javascript"></script>
+<script>
+
+	
+	 $(function () {
+setTimeout(function(){ 
+
+    
+	echarts_1();
+ 	 
+}, 500);
+
+/**********/
+        
+
+ 	function echarts_1() {
+
+        // 从 Flask 传递过来的数据
+        //var scatterData1 = {{ scatter_data|tojson }};
+        var scatterData1 = {{ scatter_data|tojson }};
+        console.log(scatterData1);
+        var scatterData2= [
+            [0.1, 5], [0.2, 20], [0.5, 30], [0.7, 45], [0.8, 65] ,
+            [0.2, 10], [0.2, 35], [0.5, 45], [0.7, 55], [0.8, 75] ,
+            [0.3, 15], [0.2, 45], [0.5, 55], [0.7, 65], [0.8, 85] 
+            ];
+       // 使用 concat() 方法合并数组
+       var combinedData = scatterData1.concat(scatterData2);
+        console.log(combinedData);
+ 		var myChart = echarts.init(document.getElementById('echart1'));
+
+         option = {
+    title : {
+        text: '置信度检测个数分布',
+        subtext: '抽样调查来自: echarts  2025'
+    },
+    tooltip : {
+        trigger: 'axis',
+        showDelay : 0,
+        formatter : function (params) {
+            if (params.value.length > 1) {
+                return params.seriesName + ' :<br/>'
+                   + params.value[0] + '置信度 ' 
+                   + params.value[1] + '检测个数 ';
+            }
+            else {
+                return params.seriesName + ' :<br/>'
+                   + params.name + ' : '
+                   + params.value + '检测个数 ';
+            }
+        },  
+        axisPointer:{
+            show: true,
+            type : 'cross',
+            lineStyle: {
+                type : 'dashed',
+                width : 1
+            }
+        }
+    },
+    legend: {
+        data:['女性']
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            //mark : {show: true},
+            //dataZoom : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    xAxis : [
+        {
+            type : 'value',
+            scale:true,
+            axisLabel : {
+                formatter: '{value} 置信度'
+            }
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            scale:true,
+            axisLabel : {
+                formatter: '{value} 检测个数'
+            }
+        }
+    ],
+    series : [
+        {
+            name:'坐标',
+            type:'scatter',
+            data: combinedData,
+            markPoint : {
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            },
+            markLine : {
+                data : [
+                    {type : 'average', name: '平均值'}
+                ]
+            }
+        } 
+    ]
+};
+                    
+
+ 		// 使用刚指定的配置项和数据显示图表。
+ 		myChart.setOption(option);
+ 		window.addEventListener("resize", function () {
+ 			myChart.resize();
+ 		});
+ 	}
+		 
+/**********/
+ 
+
+
+})
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录日志</title>
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+
+<body>
+    <!-- 左侧菜单栏 -->
+    {% include  'base/leftmenu.html' %}
+
+    <!-- 右侧内容区域 -->
+    <div class="content">
+        <!-- XX管理 -->
+        <div id="user-management">
+            <h3>登录日志</h3>
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>登录ID</th>
+                        <th>登录IP</th>
+                        <th>登录时间</th>
+                 
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td>{{ log.username }}</td>
+                        <td>{{ log.ip_address }}</td>
+                        <td>{{ log.login_time }}</td>
+ 
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>

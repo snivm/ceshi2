@@ -1,0 +1,201 @@
+ 
+<html class="loading" lang="en" data-textdirection="ltr">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="author" content="PIXINVENT">
+    <title>管理后台</title>
+    <link rel="stylesheet" type="text/css" href="/static/mb/app-assets/css/vendors.css">
+    <link rel="stylesheet" type="text/css" href="/static/mb/app-assets/css/vertical-menu.css">
+    <link rel="stylesheet" type="text/css" href="/static/mb/app-assets/css/bootstrap-extended.css">
+    </head>
+    <body>
+    <div class="content-wrapper">
+      <div class="content-header ">
+        <div class="content-header-left mb-2">
+          <h3 class="content-header-title mb-0">用户管理</h3>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-content">
+          <div class="card-body">
+         
+            <div class="funcbtn clearfix">
+                <div class="pull-left"><a class="btn btn-info" href="#"  data-toggle="modal" data-target="#myModal">添加用户</a></div>
+              </div>
+            <div class="tablebox1">
+              <table class="table">
+                <thead>
+                    <tr>
+                        <th>账号</th>
+                        <th>密码</th>
+                        <th>类型</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+    
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.password }}</td>
+                        <td>{{ user.usertype }}</td>
+                        <td>
+
+                      <a href="#"  class="btn btn-primary btn-td" data-toggle="modal" data-target="#myModal_user_edit" data-param="{{ user }}">编辑权限</a>
+                 
+ 
+                     <a href="{{ url_for('delete_user_route', user_id=user.username) }}" onclick="return confirm('确定要删除该用户吗？')" class="btn btn-danger btn-td">删除</a>
+ 
+
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+     
+              {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+              <ul>
+                  {% for category, message in messages %}
+                  <li class="{{ category }}" style="list-style-type: none;color: red;" >{{ message }}</li>
+                  {% endfor %}
+              </ul>
+              {% endif %}
+              {% endwith %}
+                
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+        
+    
+        
+   
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">添加用户</h4>
+            </div>
+            <form class="password-form" method="POST" action="/user_add">
+            <div class="modal-body">
+             <div class="form1 form2" >
+                      <ul class="row">
+                          <li class="col-xs-20"><span>登录账号：</span>
+                              <input type="text" id="username" name="username" placeholder="账号" class="form-control" required>
+                          </li>
+                          
+                          <li class="col-xs-20"><span>登录密码：</span>
+                            <input type="text" id="password" name="password" placeholder="密码"  class="form-control" required>
+                          </li>
+                          <li class="col-xs-20"><span>权限类型：</span>
+                            <select id="usertype" name="usertype" style="width: 290px;" class="form-control" required>
+                              <option value="管理员">管理员</option>
+                              <option value="普通用户" selected>普通用户</option>
+                          </select> 
+                          </li>
+                          </ul>
+                      </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="modal fade" id="myModal_user_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title"> 编辑权限</h4>
+            </div>
+            <form class="password-form" method="POST" action="/user_edit_save">
+            <div class="modal-body">
+             <div class="form1 form2" >
+              <ul class="row">
+                <li class="col-xs-10">
+                  <span>登录账号：</span>
+                  <input type="text" id="username_bj" name="username" placeholder="账号" class="form-control" readonly="true" style="background-color: #f0f0f0;" required>
+                  <span>权限类型：</span>
+                  <li class="col-xs-20"> 
+                    <select id="usertype_bj" name="usertype" style="width: 240;" class="form-control" required>
+                      <option value="管理员">管理员</option>
+                      <option value="普通用户" selected>普通用户</option>
+                  </select> 
+                </li>
+                </ul>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              <button type="submit" class="btn btn-primary" >保存</button>
+            </div>
+          </form>
+          </div>
+        </div>
+    <script src="/static/mb/app-assets/js/vendors.min.js" type="text/javascript"></script> 
+    <script src="/static/mb/app-assets/js/app-menu.js" type="text/javascript"></script> 
+    <script src="/static/mb/app-assets/js/app.js" type="text/javascript"></script> 
+    <script src="/static/mb/app-assets/js/echarts.min.js" type="text/javascript"></script> 
+    <script src="/static/mb/app-assets/laydate/laydate.js" type="text/javascript"></script> 
+
+   
+    <script>
+    lay('#version').html('-v'+ laydate.v);
+    laydate.render({
+        elem: '#test1'
+      ,range: true
+      ,theme: '#00B5B8'
+    });
+    </script>
+        
+     
+        <script>
+        $(document).ready(function () {
+    $('#myModal_user_edit').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var param = button.data('param');
+        try {
+          var validJsonString = param.replace(/'/g, '"');
+            var user = JSON.parse(validJsonString);
+            //$('#c').text(user.username);
+            //console.log($('#username_bj')); // 打印原始数据以便调试
+            var inputElement = document.getElementById('username_bj');
+            if (inputElement) {
+                inputElement.value = user.username;
+            }
+             // 选中匹配的 option
+             //$('#usertype_bj').val(user.usertype);
+              // 获取 select 元素
+            var selectElement = document.getElementById('usertype_bj');
+            // 获取所有 option 元素
+            var options = selectElement.options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === user.usertype) {
+                    // 选中匹配的 option
+                    options[i].selected = true;
+                    break;
+                }
+                else
+                {  options[i].selected = false;}
+            }
+        } catch (error) {
+            console.error('解析用户数据时出错:', error);
+            console.log('原始数据:', param); // 打印原始数据以便调试
+        }
+    });
+});
+      </script>
+    </body>
+    </html>

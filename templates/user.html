@@ -1,0 +1,67 @@
+
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+
+<body>
+    <!-- 左侧菜单栏 -->
+    {% include  'base/leftmenu.html' %}
+
+    <!-- 右侧内容区域 -->
+    <div class="content">
+        <!-- 用户管理 -->
+        <div id="user-management">
+            <h3>用户管理</h3>
+            <a href="{{ url_for('user_add') }}">添加用户</a>
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>账号</th>
+                        <th>密码</th>
+                        <th>类型</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.password }}</td>
+                        <td>{{ user.usertype }}</td>
+                        <td>
+
+                      <a href="{{ url_for('user_edit', user_id=user.username) }}" onclick="return confirm('确定要修改该用户吗？')">编辑权限</a>
+ 
+                     <a href="{{ url_for('delete_user_route', user_id=user.username) }}" onclick="return confirm('确定要删除该用户吗？')">删除</a>
+ 
+
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                <li class="{{ category }}" style="list-style-type: none">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
